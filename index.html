@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>합법적 자녀 자산이전 전략 | 노후 나침반</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive: #7A8A2A;
+    --olive-light: #C8D44A;
+    --black: #111;
+    --dark: #1A1A1A;
+    --white: #fff;
+    --bg: #F5F2EA;
+    --card-bg: #fff;
+    --red: #C02020;
+    --green: #1A7A3A;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--black); font-size: 18px; line-height: 1.7; }
+
+  header { background: var(--black); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { color: var(--olive-light); font-size: 20px; font-weight: 900; }
+  .logo span { color: var(--white); }
+
+  .hero { background: var(--black); padding: 44px 24px 52px; text-align: center; }
+  .hero-badge { display: inline-block; background: var(--olive-light); color: var(--black); font-size: 14px; font-weight: 700; padding: 6px 16px; border-radius: 100px; margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(26px, 6.5vw, 42px); font-weight: 900; color: var(--white); line-height: 1.25; margin-bottom: 14px; }
+  .hero h1 em { color: var(--olive-light); font-style: normal; }
+  .hero p { font-size: clamp(15px, 3.5vw, 18px); color: #AAA; }
+
+  .tab-nav { display: flex; background: var(--dark); overflow-x: auto; scrollbar-width: none; position: sticky; top: 58px; z-index: 90; }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn { flex: 0 0 auto; padding: 16px 20px; font-size: 15px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; color: #777; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .tab-btn.active { color: var(--olive-light); border-bottom-color: var(--olive-light); }
+
+  main { max-width: 680px; margin: 0 auto; padding: 28px 20px 80px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .sec-title { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+  .sec-sub { font-size: 15px; color: #666; margin-bottom: 24px; }
+
+  .card { background: var(--card-bg); border-radius: var(--radius); padding: 24px 22px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .card-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .icon-box { width: 34px; height: 34px; background: var(--olive-light); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+
+  .alert-olive { background: #F5F7E6; border-left: 5px solid var(--olive); border-radius: 0 12px 12px 0; padding: 16px 18px; margin-bottom: 16px; font-size: 16px; }
+  .alert-olive strong { display: block; font-size: 17px; margin-bottom: 4px; color: var(--olive); }
+  .alert-red { background: #FFF0F0; border-left: 5px solid var(--red); border-radius: 0 12px 12px 0; padding: 16px 18px; margin-bottom: 16px; font-size: 16px; }
+  .alert-red strong { display: block; font-size: 17px; color: var(--red); margin-bottom: 4px; }
+  .alert-green { background: #F0FAF3; border-left: 5px solid var(--green); border-radius: 0 12px 12px 0; padding: 16px 18px; margin-bottom: 16px; font-size: 16px; }
+  .alert-green strong { display: block; font-size: 17px; color: var(--green); margin-bottom: 4px; }
+
+  .dark-box { background: var(--black); color: var(--white); border-radius: var(--radius); padding: 24px 22px; margin-bottom: 16px; text-align: center; }
+  .dark-box .big { font-size: clamp(32px, 8vw, 48px); font-weight: 900; color: var(--olive-light); margin: 8px 0; }
+
+  .hl-row { display: flex; justify-content: space-between; align-items: center; background: #F9F9F2; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .hl-label { font-size: 15px; color: #555; }
+  .hl-value { font-size: 20px; font-weight: 900; }
+
+  .form-label { display: block; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .form-hint { font-size: 13px; color: #888; margin-top: 5px; }
+  .form-group { margin-bottom: 20px; }
+
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-btn { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 2px solid #DDD; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; background: var(--white); width: 100%; text-align: left; transition: all 0.15s; }
+  .radio-btn:hover { border-color: var(--olive-light); }
+  .radio-btn.selected { border-color: var(--olive); background: #F5F7E6; font-weight: 700; }
+  .radio-circle { width: 22px; height: 22px; border: 2px solid #CCC; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .radio-btn.selected .radio-circle { border-color: var(--olive); background: var(--olive-light); }
+  .radio-btn.selected .radio-circle::after { content: ''; width: 9px; height: 9px; background: var(--black); border-radius: 50%; }
+
+  .slider-value { text-align: center; font-size: 26px; font-weight: 900; margin-bottom: 6px; }
+  .slider-value span { color: var(--olive); }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 7px; border-radius: 4px; background: #DDD; outline: none; margin-bottom: 10px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--olive-light); border: 3px solid var(--black); cursor: pointer; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 13px; color: #888; }
+
+  .calc-btn { width: 100%; padding: 20px; font-size: 19px; font-weight: 900; font-family: 'Noto Sans KR', sans-serif; background: var(--olive-light); color: var(--black); border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 0 var(--olive); transition: transform 0.1s, box-shadow 0.1s; margin-top: 6px; }
+  .calc-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--olive); }
+  .reset-btn { width: 100%; padding: 14px; font-size: 16px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; background: none; color: #888; border: 2px solid #DDD; border-radius: 12px; cursor: pointer; margin-top: 12px; }
+
+  .result-box { display: none; margin-top: 24px; border-radius: var(--radius); overflow: hidden; }
+  .result-box.show { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+  .result-header { padding: 26px 22px; text-align: center; }
+  .result-header.olive { background: var(--olive); }
+  .result-icon { font-size: 44px; margin-bottom: 10px; }
+  .result-title { font-size: 24px; font-weight: 900; color: var(--white); margin-bottom: 6px; }
+  .result-desc { font-size: 16px; color: rgba(255,255,255,0.85); }
+  .result-body { background: var(--white); padding: 22px; }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #EEE; font-size: 16px; }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: #666; }
+  .result-row .value { font-weight: 700; }
+  .result-row .value.ok { color: var(--green); font-size: 18px; }
+  .result-row .value.warn { color: var(--red); }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-item { display: flex; gap: 16px; background: var(--white); border-radius: var(--radius); padding: 20px 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .step-num { width: 40px; height: 40px; background: var(--olive-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
+  .step-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .step-desc { font-size: 15px; color: #555; }
+
+  .danger-item { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--red); margin-bottom: 12px; }
+  .danger-title { font-size: 18px; font-weight: 700; color: var(--red); margin-bottom: 8px; }
+  .danger-desc { font-size: 15px; color: #444; }
+
+  .big-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .big-card { background: var(--white); border-radius: var(--radius); padding: 20px 14px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-top: 4px solid var(--olive-light); }
+  .big-label { font-size: 13px; color: #888; margin-bottom: 6px; }
+  .big-value { font-size: clamp(22px, 5.5vw, 30px); font-weight: 900; }
+  .big-value small { font-size: 16px; }
+  .big-sub { font-size: 12px; color: #AAA; margin-top: 4px; }
+
+  .acc-item { background: var(--white); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .acc-head { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; font-size: 16px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; background: none; border: none; cursor: pointer; text-align: left; color: var(--black); gap: 10px; }
+  .acc-arrow { font-size: 13px; color: #AAA; flex-shrink: 0; transition: transform 0.25s; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { display: none; padding: 0 20px 20px; font-size: 15px; color: #444; line-height: 1.8; }
+  .acc-item.open .acc-body { display: block; }
+
+  .check-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px 0; border-bottom: 1px solid #EEE; cursor: pointer; }
+  .check-item:last-child { border-bottom: none; }
+  .check-box { width: 26px; height: 26px; border: 2px solid #CCC; border-radius: 7px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.15s; }
+  .check-item.checked .check-box { background: var(--green); border-color: var(--green); color: var(--white); }
+  .check-main { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+  .check-sub { font-size: 14px; color: #666; }
+
+  .prog-bar { height: 8px; background: #EEE; border-radius: 4px; margin: 16px 0 6px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--olive-light); border-radius: 4px; transition: width 0.4s; }
+  .prog-text { font-size: 13px; color: #888; text-align: right; }
+
+  .simple-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .simple-table th { background: var(--black); color: var(--olive-light); padding: 12px 14px; text-align: left; font-weight: 700; }
+  .simple-table td { padding: 12px 14px; border-bottom: 1px solid #EEE; }
+  .simple-table tr:last-child td { border-bottom: none; }
+  .simple-table tr:nth-child(even) td { background: #F9F9F2; }
+
+  .phone-box { background: var(--black); border-radius: var(--radius); padding: 24px 22px; text-align: center; margin-top: 20px; }
+  .phone-num { font-size: clamp(32px, 9vw, 48px); font-weight: 900; color: var(--olive-light); letter-spacing: 2px; margin: 10px 0; }
+  .phone-desc { font-size: 15px; color: #888; }
+
+  .input-wrap { position: relative; }
+  .input-field { width: 100%; padding: 14px 18px; font-size: 19px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; border: 2px solid #DDD; border-radius: 12px; background: var(--white); color: var(--black); -webkit-appearance: none; transition: border-color 0.15s; }
+  .input-field:focus { outline: none; border-color: var(--olive); }
+  .input-unit { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #888; pointer-events: none; }
+
+  footer { background: var(--dark); color: #666; text-align: center; padding: 24px; font-size: 13px; line-height: 1.8; }
+  footer strong { color: var(--olive-light); }
+
+  @media (max-width: 480px) {
+    .big-grid { grid-template-columns: 1fr; }
+    main { padding: 20px 14px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">노후 <span>나침반</span></div>
+  <div style="color:#666; font-size:13px;">합법적 자녀 자산이전</div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">✅ 국세청 인정 합법 전략</div>
+  <h1>자녀에게<br><em>증여세 0원</em>으로<br>자산 이전하는 법</h1>
+  <p>10년 타이머 · 차용증 · 특별 공제<br>내 상황에 맞게 직접 계산하세요</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('calc')">🧮 증여세 계산기</button>
+  <button class="tab-btn" onclick="switchTab('strategy')">📋 핵심 전략</button>
+  <button class="tab-btn" onclick="switchTab('loan')">📄 차용증 가이드</button>
+  <button class="tab-btn" onclick="switchTab('danger')">⚠️ 주의사항</button>
+  <button class="tab-btn" onclick="switchTab('faq')">❓ 자주 묻는 질문</button>
+</div>
+
+<main>
+
+<!-- ══ TAB 1: 증여세 계산기 ══ -->
+<div class="tab-panel active" id="tab-calc">
+  <div class="sec-title">증여세 간편 계산기</div>
+  <div class="sec-sub">공제 한도와 예상 세금을 확인하세요</div>
+
+  <div class="alert-olive">
+    <strong>💡 핵심 원칙</strong>
+    증여는 10년 단위로 공제가 갱신됩니다. 자녀가 어릴수록, 빨리 시작할수록 절세 효과가 극대화됩니다.
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon-box">👨‍👧</div>자녀 나이 선택</div>
+    <div class="radio-group">
+      <button class="radio-btn selected" onclick="selectAge(this,'minor')" id="btn-minor">
+        <div class="radio-circle"></div>
+        미성년자 (만 19세 미만) — 10년 공제 한도 2,000만 원
+      </button>
+      <button class="radio-btn" onclick="selectAge(this,'adult')" id="btn-adult">
+        <div class="radio-circle"></div>
+        성인 자녀 (만 19세 이상) — 10년 공제 한도 5,000만 원
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon-box">💰</div>증여 금액 입력</div>
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="slider-value" id="gift-display">증여액 <span>3,000</span> 만 원</div>
+      <input type="range" id="gift-slider" min="500" max="20000" step="500" value="3000"
+        oninput="updateGiftDisplay(this.value)">
+      <div class="slider-labels"><span>500만 원</span><span>2억 원</span></div>
+      <div class="form-hint">결혼·출산 특별 공제 적용 여부는 아래에서 선택하세요</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon-box">💍</div>특별 공제 적용 여부</div>
+    <div class="radio-group">
+      <button class="radio-btn selected" onclick="selectSpecial(this,'none')" id="btn-none">
+        <div class="radio-circle"></div>
+        해당 없음
+      </button>
+      <button class="radio-btn" onclick="selectSpecial(this,'wedding')" id="btn-wedding">
+        <div class="radio-circle"></div>
+        결혼 공제 적용 (+1억 원 추가 공제)
+      </button>
+      <button class="radio-btn" onclick="selectSpecial(this,'birth')" id="btn-birth">
+        <div class="radio-circle"></div>
+        출산/입양 공제 적용 (+1억 원 추가 공제)
+      </button>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcGift()">📊 증여세 계산하기</button>
+
+  <div class="result-box" id="gift-result">
+    <div class="result-header olive">
+      <div class="result-icon" id="gift-icon"></div>
+      <div class="result-title" id="gift-title"></div>
+      <div class="result-desc" id="gift-desc"></div>
+    </div>
+    <div class="result-body">
+      <div class="result-row">
+        <span class="label">증여 금액</span>
+        <span class="value" id="r-gift"></span>
+      </div>
+      <div class="result-row">
+        <span class="label">공제 한도</span>
+        <span class="value" id="r-deduct"></span>
+      </div>
+      <div class="result-row">
+        <span class="label">과세 표준</span>
+        <span class="value" id="r-base"></span>
+      </div>
+      <div class="result-row">
+        <span class="label">예상 증여세</span>
+        <span class="value" id="r-tax"></span>
+      </div>
+      <div class="result-row">
+        <span class="label">절세 팁</span>
+        <span class="value" style="font-size:15px; color:#555;" id="r-tip"></span>
+      </div>
+      <div style="margin-top:16px; padding:14px; background:#F5F7E6; border-radius:10px; font-size:14px; color:#555;">
+        ⚠ 이 결과는 참고용입니다. 정확한 세금은 세무사 또는 국세청 홈택스로 확인하세요.
+      </div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetCalc()">🔄 다시 계산하기</button>
+</div>
+
+<!-- ══ TAB 2: 핵심 전략 ══ -->
+<div class="tab-panel" id="tab-strategy">
+  <div class="sec-title">핵심 증여 전략</div>
+  <div class="sec-sub">상황별로 활용하세요</div>
+
+  <div class="dark-box">
+    <div style="font-size:15px; color:#AAA;">아무것도 안 하면</div>
+    <div class="big">100억 → 33억</div>
+    <div style="font-size:16px; color:#CCC;">세금과 비용으로 67억이 사라집니다<br>조기 증여만이 유일한 해법입니다</div>
+  </div>
+
+  <!-- 3-3-6-6 법칙 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">⏱</div>3-3-6-6 법칙 — 30세까지 3억 만들기</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">1세 ~ 21세 (미성년자 구간)</div>
+          <div class="step-desc">2,000만 원씩 2회 증여 → 합계 4,000만 원<br>미성년자 공제 한도 활용</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">21세 ~ 31세 (성인 구간)</div>
+          <div class="step-desc">5,000만 원씩 2회 증여 → 합계 1억 원<br>성인 공제 한도 활용</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">기타 친족 공제 + 복리 효과</div>
+          <div class="step-desc">조부모·친척 공제 1,000만 원 추가<br>장기 투자 복리 효과로 30세에 3억 달성 가능</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 결혼·출산 특별 공제 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">💍</div>결혼·출산 특별 공제 (2024년 신설)</div>
+    <div class="big-grid">
+      <div class="big-card">
+        <div class="big-label">기본 공제</div>
+        <div class="big-value">5,000<small>만</small></div>
+        <div class="big-sub">성인 자녀 기본</div>
+      </div>
+      <div class="big-card">
+        <div class="big-label">특별 공제 추가</div>
+        <div class="big-value">+1<small>억</small></div>
+        <div class="big-sub">결혼 또는 출산</div>
+      </div>
+    </div>
+    <div class="alert-green" style="margin-bottom:0;">
+      <strong>✅ 양가 합산 시 최대 3억 원</strong>
+      친정 + 시댁 부모님이 각각 활용하면<br>
+      신혼부부는 최대 3억 원까지 증여세 없이 자금 확보 가능합니다.
+    </div>
+  </div>
+
+  <!-- 창업자금 특례 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">🚀</div>창업자금 증여특례 — 현금 5억을 세금 없이</div>
+    <div class="hl-row"><span class="hl-label">면세 한도</span><span class="hl-value" style="color:var(--green);">5억 원 (증여세 0원)</span></div>
+    <div class="hl-row"><span class="hl-label">5억 초과 ~ 50억</span><span class="hl-value">10% 저율 단일 과세</span></div>
+    <div class="hl-row"><span class="hl-label">일반 증여세 대비</span><span class="hl-value" style="color:var(--green);">최대 50% 절세</span></div>
+    <div class="alert-red" style="margin-top:12px; margin-bottom:0;">
+      <strong>⚠ 사후 관리 필수</strong>
+      자금의 용도 외 사용은 엄격히 금지됩니다.<br>
+      반드시 세무 전문가와 함께 설계하세요.
+    </div>
+  </div>
+
+  <!-- 부동산 저가 양수도 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">🏠</div>부동산 저가 양수도 — 합법적 할인 이전</div>
+    <div class="hl-row"><span class="hl-label">국세청 인정 할인 한도</span><span class="hl-value">시세의 30% 또는 3억 원 중 적은 금액</span></div>
+    <div class="alert-olive" style="margin-bottom:0;">
+      <strong>💡 전략적 감정평가와 결합 시 효과 극대화</strong>
+      전략적 사감정으로 10~20% 평가액을 낮춘 후 저가 양수도를 적용하면 절세 효과가 기하급수적으로 커집니다.
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB 3: 차용증 가이드 ══ -->
+<div class="tab-panel" id="tab-loan">
+  <div class="sec-title">차용증 완벽 가이드</div>
+  <div class="sec-sub">쓰는 것으로 끝이 아닙니다</div>
+
+  <div class="alert-red">
+    <strong>⚠ 가장 흔한 실수</strong>
+    차용증만 작성하고 실제 상환 기록이 없으면 국세청이 인정하지 않습니다. 반드시 매달 계좌 이체 기록을 남기세요.
+  </div>
+
+  <!-- 한도 계산 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">💸</div>무이자 대출 가능 한도</div>
+    <div class="dark-box" style="border-radius: 12px; margin-bottom:0;">
+      <div style="font-size:15px; color:#AAA; margin-bottom:6px;">세법상 적정 이자율 4.6% 기준</div>
+      <div style="font-size:clamp(28px,7vw,40px); font-weight:900; color:var(--olive-light);">약 2억 1,700만 원</div>
+      <div style="font-size:15px; color:#CCC; margin-top:6px;">연간 이자 1,000만 원 미만은 증여로 보지 않습니다</div>
+    </div>
+  </div>
+
+  <!-- 완벽한 차용증 3요소 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">✅</div>국세청이 인정하는 차용증 3요소</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">확정일자 또는 공증</div>
+          <div class="step-desc">작성 시기를 객관적으로 입증해야 합니다. 나중에 급조한 서류가 아님을 증명하는 가장 확실한 방법입니다.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">정기적인 이자·원금 계좌 이체 기록</div>
+          <div class="step-desc">매달 소액이라도 자녀 계좌 → 부모 계좌로 이체되는 금융 흔적이 반드시 있어야 합니다.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">자녀의 실질적 상환 능력</div>
+          <div class="step-desc">소득이 전혀 없는 자녀에게 수억 원을 빌려주는 것은 상환 가능성이 없어 증여로 간주될 확률이 높습니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 계좌 메모 주의 -->
+  <div class="card">
+    <div class="card-title"><div class="icon-box">📝</div>계좌 이체 메모 — 글자 하나가 자백이 된다</div>
+    <div style="overflow-x:auto;">
+      <table class="simple-table">
+        <tr><th>위험한 메모</th><th>안전한 메모</th></tr>
+        <tr><td style="color:var(--red);">전세금 지원</td><td style="color:var(--green);">빌림</td></tr>
+        <tr><td style="color:var(--red);">아파트 중도금</td><td style="color:var(--green);">차용증 1회차 상환</td></tr>
+        <tr><td style="color:var(--red);">증여</td><td style="color:var(--green);">원금 상환</td></tr>
+      </table>
+    </div>
+    <div class="form-hint" style="font-size:15px; margin-top:12px;">모든 자금의 흐름은 반드시 <strong>자녀의 계좌에서, 자녀의 명의</strong>로 이루어져야 합니다.</div>
+  </div>
+</div>
+
+<!-- ══ TAB 4: 주의사항 ══ -->
+<div class="tab-panel" id="tab-danger">
+  <div class="sec-title">세무조사를 부르는 실수들</div>
+  <div class="sec-sub">모르면 완벽한 계획도 무너집니다</div>
+
+  <div class="danger-item">
+    <div class="danger-title">⚠ 실수 1 — 대위 변제</div>
+    <div class="danger-desc">자녀의 대출금이나 이자를 부모 계좌에서 직접 갚아주는 행위입니다. 국세청은 이를 즉각적인 추가 증여로 간주합니다. 반드시 자녀 계좌로 돈을 보내고 자녀가 직접 납부해야 합니다.</div>
+  </div>
+  <div class="danger-item">
+    <div class="danger-title">⚠ 실수 2 — 유령 차용증</div>
+    <div class="danger-desc">형식적인 차용증만 작성해두고 실제 이자 지급이나 원금 상환 내역이 전혀 없는 경우입니다. 국세청은 이를 인정하지 않습니다. 반드시 매달 계좌 이체 기록을 남기세요.</div>
+  </div>
+  <div class="danger-item">
+    <div class="danger-title">⚠ 실수 3 — 증여세 대납</div>
+    <div class="danger-desc">자녀가 내야 할 증여세를 부모가 대신 내주는 행위입니다. 대납한 세금 액수만큼 다시 증여세가 얹어지는 가산세 폭탄의 원흉입니다. 증여세는 반드시 자녀가 자녀 명의로 납부해야 합니다.</div>
+  </div>
+  <div class="danger-item">
+    <div class="danger-title">⚠ 실수 4 — 생활비 명목 종잣돈</div>
+    <div class="danger-desc">생활비 명목으로 받은 돈을 주식, 코인, 부동산 등에 투자하는 순간 즉시 과세 대상이 됩니다. 생활비는 자녀가 스스로 감당할 수 없는 상황에서 직접 사용된 금액만 인정됩니다.</div>
+  </div>
+
+  <!-- 체크리스트 -->
+  <div class="card" style="padding: 20px 22px 8px; margin-top: 24px;">
+    <div class="card-title" style="margin-bottom:4px;"><div class="icon-box">✔</div>내 증여 계획 안전 체크</div>
+    <div id="safe-checklist">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div>
+          <div class="check-main">증여 후 홈택스에서 증여세 신고를 했다</div>
+          <div class="check-sub">세금이 0원이어도 반드시 신고해야 출처 증빙이 됩니다</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div>
+          <div class="check-main">차용증에 확정일자 또는 공증을 받았다</div>
+          <div class="check-sub">나중에 급조한 서류가 아님을 입증하는 핵심 요소입니다</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div>
+          <div class="check-main">매달 자녀 계좌에서 이자·원금을 이체하고 있다</div>
+          <div class="check-sub">금융 흔적이 없으면 차용증은 유령 문서가 됩니다</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div>
+          <div class="check-main">계좌 이체 메모에 위험한 단어를 쓰지 않았다</div>
+          <div class="check-sub">'전세금 지원', '증여' 대신 '빌림', '차용증 상환' 으로 기재</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div>
+          <div class="check-main">자녀의 증여세를 자녀 명의로 납부했다</div>
+          <div class="check-sub">부모가 대신 내면 그 금액에 다시 증여세가 부과됩니다</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div>
+          <div class="check-main">10년 증여 플랜을 세무사와 함께 설계했다</div>
+          <div class="check-sub">가족 맞춤형 마스터 플랜이 있어야 실수를 예방합니다</div>
+        </div>
+      </div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="safe-fill" style="width:0%"></div></div>
+    <div class="prog-text" id="safe-text">0 / 6 확인 완료</div>
+  </div>
+</div>
+
+<!-- ══ TAB 5: FAQ ══ -->
+<div class="tab-panel" id="tab-faq">
+  <div class="sec-title">자주 묻는 질문</div>
+  <div class="sec-sub">가장 많이 물어보시는 것들입니다</div>
+
+  <div class="acc-item open">
+    <button class="acc-head" onclick="toggleAcc(this)">증여세가 0원이어도 신고를 해야 하나요?<span class="acc-arrow">▼</span></button>
+    <div class="acc-body">반드시 해야 합니다. 세금이 0원이어도 홈택스를 통해 증여세 신고를 해야 합니다. 신고서가 나중에 자녀 자금의 완벽한 출처 증빙이 됩니다. 자녀가 부동산을 취득할 때 국세청의 자금 출처 조사에 대응하는 가장 강력한 방패입니다. 증여일로부터 3개월 이내에 신고하면 됩니다.</div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-head" onclick="toggleAcc(this)">10년 공제 한도, 정확히 언제부터 계산하나요?<span class="acc-arrow">▼</span></button>
+    <div class="acc-body">증여일을 기준으로 소급해서 10년을 계산합니다. 예를 들어 2025년에 증여한다면 2015년 이후 같은 수증자에게 증여한 금액을 모두 합산합니다. 10년이 지나면 이전 증여는 합산에서 제외되고 공제 한도가 새로 갱신됩니다. 자녀가 1세일 때 첫 증여를 시작하면 11세, 21세, 31세에 각각 새로운 공제 한도를 활용할 수 있습니다.</div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-head" onclick="toggleAcc(this)">자녀에게 전세금을 줬는데 증여세를 내야 하나요?<span class="acc-arrow">▼</span></button>
+    <div class="acc-body">공제 한도를 초과한 금액에 대해서는 증여세를 납부해야 합니다. 차용증을 작성하고 실제 이자와 원금을 상환하는 방식으로 진행하면 증여가 아닌 대여로 인정받을 수 있습니다. 단, 완벽한 차용증의 3요소(확정일자, 상환 기록, 상환 능력)를 모두 갖춰야 합니다. 계좌 이체 메모에 '전세금 지원'이라고 쓰면 즉시 증여로 간주되니 주의하세요.</div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-head" onclick="toggleAcc(this)">결혼하는 자녀에게 1억 특별 공제, 어떻게 신청하나요?<span class="acc-arrow">▼</span></button>
+    <div class="acc-body">혼인신고일 전후 2년 이내에 증여한 금액에 한해 1억 원을 추가 공제받을 수 있습니다. 증여세 신고 시 결혼·출산 공제 항목을 선택하면 됩니다. 기본 공제 5,000만 원과 합산하면 총 1억 5,000만 원까지 증여세가 0원입니다. 양가 부모님이 모두 활용하면 신혼부부는 최대 3억 원까지 가능합니다.</div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-head" onclick="toggleAcc(this)">조부모가 손주에게 직접 증여하면 세금이 더 나오나요?<span class="acc-arrow">▼</span></button>
+    <div class="acc-body">세대 생략 증여에는 30%의 할증세가 붙습니다. 하지만 상속세 합산 기간이 10년에서 5년으로 줄어드는 큰 장점이 있습니다. 부모를 통해 증여하면 상속 발생 시 과거 10년 치가 합산되지만, 조부모가 직접 손주에게 증여하면 5년 치만 합산됩니다. 고액 자산가의 경우 30% 할증을 감수하더라도 세대 생략 전략이 유리한 경우가 많습니다.</div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-head" onclick="toggleAcc(this)">국세청이 언제 세무조사를 하나요?<span class="acc-arrow">▼</span></button>
+    <div class="acc-body">국세청은 실시간 계좌 감시를 하지 않습니다. 주로 두 가지 이벤트가 발생할 때 과거 10년 치 계좌를 소급 조회합니다. 첫째는 자녀가 고가 부동산을 취득할 때, 둘째는 가족의 상속이 발생할 때입니다. 또한 고액 현금 입출금(CTR)이나 자금 세탁 의심 거래(STR) 발생 시 금융정보분석원을 통해 자동으로 통보됩니다. 지금 당장 문제가 없어도 10년 후를 대비한 완벽한 기록이 필요합니다.</div>
+  </div>
+
+  <div class="phone-box">
+    <div style="font-size:15px; color:#888;">증여·상속세 전문 세무 상담</div>
+    <div class="phone-num">☎ 126</div>
+    <div class="phone-desc">국세청 세금 상담 콜센터 (평일 09:00~18:00)</div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <strong>노후 나침반</strong><br>
+  사랑은 실천이고, 증여는 기술입니다<br><br>
+  본 페이지의 내용은 참고용이며 정확한 세금은 세무사 또는 국세청에 꼭 확인하세요.<br>
+  2024년 기준 | 제작: 노후 나침반
+</footer>
+
+<script>
+  let ageType = 'minor';
+  let specialType = 'none';
+
+  function switchTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectAge(btn, type) {
+    ageType = type;
+    document.querySelectorAll('#btn-minor, #btn-adult').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function selectSpecial(btn, type) {
+    specialType = type;
+    document.querySelectorAll('#btn-none, #btn-wedding, #btn-birth').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function updateGiftDisplay(v) {
+    const formatted = parseInt(v).toLocaleString();
+    document.getElementById('gift-display').innerHTML = '증여액 <span>' + formatted + '</span> 만 원';
+  }
+
+  function calcGift() {
+    const amount = parseInt(document.getElementById('gift-slider').value);
+    let baseDeduct = ageType === 'minor' ? 2000 : 5000;
+    let specialDeduct = specialType === 'none' ? 0 : 10000;
+    let totalDeduct = baseDeduct + specialDeduct;
+    let taxBase = Math.max(0, amount - totalDeduct);
+    let tax = 0;
+
+    if (taxBase <= 10000) tax = taxBase * 0.10;
+    else if (taxBase <= 50000) tax = 1000 + (taxBase - 10000) * 0.20;
+    else if (taxBase <= 100000) tax = 9000 + (taxBase - 50000) * 0.30;
+    else tax = 24000 + (taxBase - 100000) * 0.40;
+
+    const box = document.getElementById('gift-result');
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    document.getElementById('gift-icon').textContent = tax === 0 ? '🎉' : '📋';
+    document.getElementById('gift-title').textContent = tax === 0 ? '증여세 0원입니다!' : '예상 증여세가 있습니다';
+    document.getElementById('gift-desc').textContent = tax === 0 ? '공제 한도 내입니다. 반드시 신고는 하세요!' : '세무사 상담으로 최적화하세요';
+    document.getElementById('r-gift').textContent = amount.toLocaleString() + ' 만 원';
+    document.getElementById('r-deduct').textContent = totalDeduct.toLocaleString() + ' 만 원';
+    document.getElementById('r-base').textContent = taxBase.toLocaleString() + ' 만 원';
+    document.getElementById('r-tax').innerHTML = '<span class="' + (tax === 0 ? 'ok' : 'warn') + '">' + Math.round(tax).toLocaleString() + ' 만 원</span>';
+    document.getElementById('r-tip').textContent = tax > 0
+      ? '증여 금액을 ' + totalDeduct.toLocaleString() + '만 원 이하로 나눠서 진행하면 세금 0원입니다'
+      : '홈택스에서 3개월 이내 증여세 신고를 꼭 완료하세요';
+  }
+
+  function resetCalc() {
+    document.getElementById('gift-result').classList.remove('show');
+    document.getElementById('gift-slider').value = 3000;
+    updateGiftDisplay(3000);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCheck(item) {
+    item.classList.toggle('checked');
+    item.querySelector('.check-box').textContent = item.classList.contains('checked') ? '✓' : '';
+    const all = document.querySelectorAll('#safe-checklist .check-item');
+    const done = document.querySelectorAll('#safe-checklist .check-item.checked').length;
+    const pct = Math.round(done / all.length * 100);
+    document.getElementById('safe-fill').style.width = pct + '%';
+    document.getElementById('safe-text').textContent = done + ' / ' + all.length + ' 확인 완료 (' + pct + '%)';
+  }
+
+  function toggleAcc(btn) {
+    btn.parentElement.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
